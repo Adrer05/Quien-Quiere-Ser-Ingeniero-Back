@@ -1,0 +1,3 @@
+-- CREATE DATABASE IF NOT EXISTS qqsi_db
+SELECT 'CREATE DATABASE qqsi_db'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'qqsi_db')\gexec-- CREATE DATABASE IF NOT EXISTS qqsi_db

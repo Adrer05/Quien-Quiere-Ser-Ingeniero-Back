@@ -1,0 +1,13 @@
+services:
+  postgres_qqsi:
+    image: postgres:15
+    restart: always
+    container_name: postgres_qqsi
+    environment:
+      POSTGRES_DB: qqsi_db
+      POSTGRES_USER: qqsi_admin
+      POSTGRES_PASSWORD: qqsi2026
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
