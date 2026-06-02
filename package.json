@@ -5,6 +5,7 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "type": "commonjs",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -17,7 +18,13 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "orm:init": "typeorm-ts-node-commonjs -d ./src/common/config/datasource.ts",
+    "m:gen:prod": "typeorm-ts-node-commonjs -d ./dist/common/config/datasource.js",
+    "m:gen:dev": "npm run orm:init migration:generate",
+    "m:run:dev": "npm run orm:init migration:run",
+    "m:gen": "npm run orm:init migration:generate",
+    "m:run": "npm run orm:init migration:run"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

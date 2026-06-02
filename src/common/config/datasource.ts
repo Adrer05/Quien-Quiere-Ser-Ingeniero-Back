@@ -1,6 +1,12 @@
 import { DataSourceOptions } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SnakeNamingStrategy } from './naming-strategy.config';
+import { DataSource } from 'typeorm';
+
+ConfigModule.forRoot({
+  envFilePath: ".env",
+  isGlobal: true
+})
 
 export const createDataSourceOptions = (configService: ConfigService): DataSourceOptions => {
   const isProduction = configService.get('IS_PRODUCTION') === 'true';
@@ -37,3 +43,5 @@ export const createDataSourceOptions = (configService: ConfigService): DataSourc
     ssl: isProduction ? { rejectUnauthorized: false } : false,
   };
 };
+
+export const AppDS = new DataSource(createDataSourceOptions(new ConfigService()))
