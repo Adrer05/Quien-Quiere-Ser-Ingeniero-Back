@@ -1,27 +1,39 @@
-import { DataSource, DataSourceOptions } from 'typeorm';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DataSourceOptions } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
+import { SnakeNamingStrategy } from './naming-strategy.config';
 
-ConfigModule.forRoot({
-  envFilePath: `.env`,
-});
+export const createDataSourceOptions = (configService: ConfigService): DataSourceOptions => {
+  const isProduction = configService.get('IS_PRODUCTION') === 'true';
 
-const configService = new ConfigService();
-const isProd = Boolean(configService.get('IS_PROD'))
-
-export const DataSourceConfig: DataSourceOptions = {
-  type: 'postgres',
-  host: configService.get('DATABASE_HOST'),
-  port: +configService.get('DATABASE_PORT'),
-  username: configService.get('DATABASE_USER'),
-  password: configService.get('DATABASE_PASSWORD'),
-  database: configService.get('DATABASE_NAME'),
-  entities: [__dirname + './../../**/**/*.entity{.ts,.js}'],
-  migrations: [__dirname + './../../migrations/*{.ts,.js}'],
-  synchronize: isProd,
-  migrationsRun: !isProd,
-  logging: !isProd,
-  namingStrategy: new SnakeNamingStrategy(),
+  return {
+    type: 'postgres',
+    host: configService.get('DB_HOST'),
+    port: +configService.get('DB_PORT'),
+    username: configService.get('POSTGRES_USER'),
+    password: configService.get('POSTGRES_PASSWORD'),
+    database: configService.get('POSTGRES_DB'),
+    extra: {
+      options: '-c timezone=UTC',
+    },
+    
+    // Configuración de entidades según el entorno
+    entities: isProduction 
+      ? ['dist/**/*.entity.js'] 
+      : [__dirname + './../../**/**/*.entity{.ts,.js}'],
+    
+    // Configuración de migraciones según el entorno
+    migrations: isProduction 
+      ? ['dist/migrations/*.js'] 
+      : [__dirname + './../../migrations/*{.ts,.js}'],
+    
+    // Configuraciones específicas por entorno
+    synchronize: !isProduction, // Solo en desarrollo
+    migrationsRun: isProduction, // Solo en producción
+    logging: !isProduction, // Solo logs en desarrollo
+    
+    namingStrategy: new SnakeNamingStrategy(),
+    
+    // SSL solo en producción
+    ssl: isProduction ? { rejectUnauthorized: false } : false,
+  };
 };
-
-export const AppDS = new DataSource(DataSourceConfig);

@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSourceConfig } from './common/config/datasource';
+import { createDataSourceOptions } from './common/config/datasource';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -9,7 +10,13 @@ import { DataSourceConfig } from './common/config/datasource';
       envFilePath: `.env`,
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot(DataSourceConfig),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        createDataSourceOptions(configService),
+    }),
+    UsersModule,
   ],
 })
 export class AppModule {}
