@@ -10,6 +10,10 @@ export class CreateUserDto {
     @IsNotEmpty()
     lastName: string;
 
+    @IsString()
+    @IsNotEmpty()
+    userName: string;
+
     @IsEmail()
     @IsNotEmpty()
     email: string;
