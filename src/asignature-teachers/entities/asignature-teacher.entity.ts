@@ -1,5 +1,5 @@
 import { BaseEntity } from "./../../common/config/base.entity";
-import { Entity, JoinTable, ManyToMany} from "typeorm";
+import { Entity, JoinColumn, ManyToOne} from "typeorm";
 import { User } from "../../users/entities/user.entity";
 import { Subject } from "../../subjects/entities/subject.entity";
 
@@ -7,12 +7,12 @@ import { Subject } from "../../subjects/entities/subject.entity";
 @Entity()
 export class AsignatureTeacher extends BaseEntity {
 
-    @ManyToMany(()=> User, user => user.asignatureTeacher)
-    @JoinTable({name: "user_asignatureTeacher"})
+    @ManyToOne(()=> User, user => user.asignatureTeacher)
+    @JoinColumn({name: "user_id"})
     user: User;
 
-    @ManyToMany(()=> Subject, subject => subject.asignatureTeacher)
-    @JoinTable({name: "subject_asignatureTeacher"})
+    @ManyToOne(()=> Subject, subject => subject.asignatureTeacher)
+    @JoinColumn({name: "subject_id"})
     subject: Subject;
 
 }

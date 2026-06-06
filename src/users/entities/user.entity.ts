@@ -1,12 +1,13 @@
 import  Rol  from "../../roles/entities/rol.entity";
 import { BaseEntity } from "./../../common/config/base.entity";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne} from "typeorm";
 import { Ranking } from "./../../ranking/entities/ranking.entity";
 import { Game } from "../../games/entities/game.entity";
 import { AsignatureTeacher } from "../../asignature-teachers/entities/asignature-teacher.entity";
 
 @Entity()
 export class User extends BaseEntity {
+
     @Column({type:"varchar", nullable: false, length: 255})
     firstName:string;
     
@@ -32,7 +33,7 @@ export class User extends BaseEntity {
     @OneToMany(()=> Game, game => game.user)
     game: Game;
 
-    @ManyToMany(()=> AsignatureTeacher, asignatureTeacher => asignatureTeacher.user)
+    @OneToMany(()=> AsignatureTeacher, asignatureTeacher => asignatureTeacher.user)
     asignatureTeacher: AsignatureTeacher;
 
 }

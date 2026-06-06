@@ -8,7 +8,7 @@ export class Ranking extends BaseEntity {
     @Column({type:"int", nullable: false})
     position:number;
 
-    @Column({type:"numeric", nullable: false})
+    @Column({type:"int", nullable: false})
     totalScore:number;
 
     @OneToOne(() => User)

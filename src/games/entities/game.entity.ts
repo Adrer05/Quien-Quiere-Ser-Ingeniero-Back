@@ -5,7 +5,7 @@ import { User } from "../../users/entities/user.entity";
 @Entity()
 export class Game extends BaseEntity {
 
-    @Column({type: "numeric", nullable:false})
+    @Column({type: "int", nullable:false})
     scoreObtained: number;
 
     @ManyToOne(()=> User, user => user.game)
