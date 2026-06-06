@@ -5,7 +5,7 @@ import { Column, Entity, JoinColumn, OneToOne} from "typeorm";
 @Entity()
 export class Ranking extends BaseEntity {
 
-    @Column({type:"numeric", nullable: false})
+    @Column({type:"int", nullable: false})
     position:number;
 
     @Column({type:"numeric", nullable: false})
