@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
 import { TopicsService } from './topics.service';
 import { CreateTopicDto } from './dto/create-topic.dto';
 import { UpdateTopicDto } from './dto/update-topic.dto';
@@ -14,7 +14,7 @@ export class TopicsController {
   }
 
   @Get()
-  findAll(paginationDto: PaginationDto) {
+  findAll(@Query() paginationDto: PaginationDto) {
     return this.topicsService.findAll(paginationDto);
   }
 

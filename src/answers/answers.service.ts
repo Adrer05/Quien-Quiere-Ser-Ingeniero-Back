@@ -96,7 +96,7 @@ export class AnswersService {
 
   async findOne(id: string) {
     try {
-      const answer = await this.answerRepo.findBy({ id })
+      const answer = await this.answerRepo.findOneBy({ id })
       if (!answer) throw new ManagerError({ type: 'NOT_FOUND', message: 'Usuario no encontrado' });
 
       return answer

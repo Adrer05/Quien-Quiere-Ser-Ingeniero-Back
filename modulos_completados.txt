@@ -7,3 +7,7 @@ Modulos Completados:
 - answers
 - questions
 - difficulty
+- ranking
+- games
+- topics
+- asignature-teachers

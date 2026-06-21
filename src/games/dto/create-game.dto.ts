@@ -5,7 +5,7 @@ export class CreateGameDto {
 
     @IsNumber()
     @IsNotEmpty()
-    scoreObtained;
+    scoreObtained: number;
 
     @IsUUID()
     @IsNotEmpty()

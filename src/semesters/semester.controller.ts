@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
 import { SemesterService } from './semester.service';
 import { CreateSemesterDto } from './dto/create-semester.dto';
 import { UpdateSemesterDto } from './dto/update-semester.dto';
@@ -14,7 +14,7 @@ export class SemesterController {
   }
 
   @Get()
-  findAll(paginationDto: PaginationDto) {
+  findAll(@Query() paginationDto: PaginationDto) {
     return this.semesterService.findAll(paginationDto);
   }
 

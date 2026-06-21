@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
 import { RankingService } from './ranking.service';
 import { CreateRankingDto } from './dto/create-ranking.dto';
 import { UpdateRankingDto } from './dto/update-ranking.dto';
@@ -15,7 +15,7 @@ export class RankingController {
   }
 
   @Get()
-  findAll(paginationDto: PaginationDto) {
+  findAll(@Query() paginationDto: PaginationDto) {
     return this.rankingService.findAll(paginationDto);
   }
 

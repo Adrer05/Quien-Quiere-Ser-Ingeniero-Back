@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
 import { AsignatureTeachersService } from './asignature-teachers.service';
 import { CreateAsignatureTeacherDto } from './dto/create-asignature-teacher.dto';
 import { UpdateAsignatureTeacherDto } from './dto/update-asignature-teacher.dto';
@@ -14,7 +14,7 @@ export class AsignatureTeachersController {
   }
 
   @Get()
-  findAll(paginationDto: PaginationDto) {
+  findAll(@Query() paginationDto: PaginationDto) {
     return this.asignatureTeachersService.findAll(paginationDto);
   }
 
