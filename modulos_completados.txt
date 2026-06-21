@@ -1,0 +1,6 @@
+Modulos Completados:
+- Users
+- degrees
+- roles
+- subjects
+- semesters

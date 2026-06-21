@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class CreateAnswerDto {
 
@@ -10,5 +10,7 @@ export class CreateAnswerDto {
     @IsNotEmpty()
     isCorrect: boolean;
 
-
+    @IsUUID()
+    @IsNotEmpty()
+    questionId: string;
 }
