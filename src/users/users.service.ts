@@ -74,16 +74,12 @@ export class UsersService {
 
   async findOne(id: string) {
     try {
-      const user = await this.usersRepo.findBy({ id })
+      const user = await this.usersRepo.findOne({ where: { id }, relations: { rol: true } });
       if (!user) throw new ManagerError({ type: 'NOT_FOUND', message: 'Usuario no encontrado' });
-
-      return user
+      return user;
     } catch (error) {
-      if(error instanceof ManagerError){
-        throw ManagerError.createSignatureError(error.message);
-      }
-
-      throw error
+      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      throw error;
     }
   }
 

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, IsUUID } from "class-validator";
 
 export class CreateRankingDto {
 
@@ -10,4 +10,7 @@ export class CreateRankingDto {
     @IsNotEmpty()
     totalScore: number;
 
+    @IsUUID()
+    @IsNotEmpty()
+    userId: string;
 }

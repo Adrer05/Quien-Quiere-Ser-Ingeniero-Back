@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, IsUUID } from "class-validator";
 
 
 export class CreateGameDto {
@@ -7,4 +7,7 @@ export class CreateGameDto {
     @IsNotEmpty()
     scoreObtained;
 
+    @IsUUID()
+    @IsNotEmpty()
+    userId: string;
 }

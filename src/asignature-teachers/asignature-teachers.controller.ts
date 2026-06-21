@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { AsignatureTeachersService } from './asignature-teachers.service';
 import { CreateAsignatureTeacherDto } from './dto/create-asignature-teacher.dto';
 import { UpdateAsignatureTeacherDto } from './dto/update-asignature-teacher.dto';
+import { PaginationDto } from 'src/common/dtos/pagination/pagination.dto';
 
 @Controller('asignature-teachers')
 export class AsignatureTeachersController {
@@ -13,22 +14,22 @@ export class AsignatureTeachersController {
   }
 
   @Get()
-  findAll() {
-    return this.asignatureTeachersService.findAll();
+  findAll(paginationDto: PaginationDto) {
+    return this.asignatureTeachersService.findAll(paginationDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.asignatureTeachersService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.asignatureTeachersService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAsignatureTeacherDto: UpdateAsignatureTeacherDto) {
-    return this.asignatureTeachersService.update(+id, updateAsignatureTeacherDto);
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateAsignatureTeacherDto: UpdateAsignatureTeacherDto) {
+    return this.asignatureTeachersService.update(id, updateAsignatureTeacherDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.asignatureTeachersService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.asignatureTeachersService.remove(id);
   }
 }

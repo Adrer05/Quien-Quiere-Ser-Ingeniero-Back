@@ -4,3 +4,6 @@ Modulos Completados:
 - roles
 - subjects
 - semesters
+- answers
+- questions
+- difficulty
