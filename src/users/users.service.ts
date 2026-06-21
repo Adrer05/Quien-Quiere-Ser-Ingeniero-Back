@@ -6,18 +6,26 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ManagerError } from './../common/errors/manager.error';
 import { PaginationDto } from './../common/dtos/pagination/pagination.dto';
+import { RolService } from 'src/roles/rol.service';
 
 @Injectable()
 export class UsersService {
 
   constructor(
     @InjectRepository(User)
-    private readonly usersRepo: Repository<User>
+    private readonly usersRepo: Repository<User>,
+    private readonly rolService: RolService,
   ){}
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const user = await this.usersRepo.create(createUserDto);
+      const { rolId, ...userData } = createUserDto;
+
+      const rol = await this.rolService.findOne(rolId);
+
+      const user = this.usersRepo.create({ ...userData, rol });
+      const savedUser = await this.usersRepo.save(user);
+      
       if(!user){
         throw new ManagerError({
           type: "BAD_REQUEST",
@@ -25,7 +33,7 @@ export class UsersService {
         })
       }
 
-      return user
+      return savedUser
     } catch (error) {
       if(error instanceof ManagerError){
         throw ManagerError.createSignatureError(error.message);
@@ -66,7 +74,8 @@ export class UsersService {
 
   async findOne(id: string) {
     try {
-      const user = await this.usersRepo.findBy({id})
+      const user = await this.usersRepo.findBy({ id })
+      if (!user) throw new ManagerError({ type: 'NOT_FOUND', message: 'Usuario no encontrado' });
 
       return user
     } catch (error) {
@@ -82,7 +91,7 @@ export class UsersService {
     try {
       const user = await this.usersRepo.update(id, updateUserDto);
       if(user.affected===0){
-        throw new ManagerError({ type: "NOT_FOUND", message: "Registro no encontrado" });
+        throw new ManagerError({ type: "NOT_FOUND", message: "Usuario no encontrado" });
       }
 
       return user
@@ -99,7 +108,7 @@ export class UsersService {
     try {
       const user = await this.usersRepo.delete(id)
       if(user.affected===0){
-        throw new ManagerError({ type: "NOT_FOUND", message: "Registro no encontrado" });
+        throw new ManagerError({ type: "NOT_FOUND", message: "Usuario no encontrado" });
       }
       return user
     } catch (error) {
