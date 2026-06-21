@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { CareerService } from './career.service';
 import { CreateCareerDto } from './dto/create-career.dto';
 import { UpdateCareerDto } from './dto/update-career.dto';
+import { PaginationDto } from 'src/common/dtos/pagination/pagination.dto';
 
 @Controller('career')
 export class CareerController {
@@ -13,22 +14,22 @@ export class CareerController {
   }
 
   @Get()
-  findAll() {
-    return this.careerService.findAll();
+  findAll(paginationDto: PaginationDto) {
+    return this.careerService.findAll(paginationDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.careerService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.careerService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCareerDto: UpdateCareerDto) {
-    return this.careerService.update(+id, updateCareerDto);
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateCareerDto: UpdateCareerDto) {
+    return this.careerService.update(id, updateCareerDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.careerService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.careerService.remove(id);
   }
 }

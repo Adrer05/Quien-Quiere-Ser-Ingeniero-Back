@@ -10,7 +10,7 @@ export class Semester extends BaseEntity {
     number: number;
 
     @ManyToOne(()=> Career, career => career.semester)
-    @JoinColumn({name: "semester_career"})
+    @JoinColumn({name: "career_id"})
     career: Career;
 
     @OneToMany(()=> Subject, subject => subject.semester)
