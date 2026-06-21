@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateRolDto {
 
@@ -7,6 +7,7 @@ export class CreateRolDto {
     name: string;
 
     @IsString()
+    @IsOptional()
     description: string;
 
 }
