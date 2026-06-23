@@ -4,6 +4,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne} from "typeo
 import { Ranking } from "./../../ranking/entities/ranking.entity";
 import { Game } from "../../games/entities/game.entity";
 import { AsignatureTeacher } from "../../asignature-teachers/entities/asignature-teacher.entity";
+import { Exclude } from "class-transformer";
 
 @Entity()
 export class User extends BaseEntity {
@@ -20,7 +21,7 @@ export class User extends BaseEntity {
     @Column({type:"varchar", nullable: false, length: 255})
     email:string;
 
-    @Column({type:"text", nullable: false})
+    @Column({type:"text", nullable: false, select: false})
     password:string;
 
     @ManyToOne(()=> Rol, rol=> rol.user)

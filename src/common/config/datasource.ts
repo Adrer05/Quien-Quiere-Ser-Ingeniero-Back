@@ -20,6 +20,7 @@ export const createDataSourceOptions = (configService: ConfigService): DataSourc
     database: configService.get('POSTGRES_DB'),
     extra: {
       options: '-c timezone=UTC',
+      ssl: { rejectUnauthorized: false },
     },
     
     // Configuración de entidades según el entorno
