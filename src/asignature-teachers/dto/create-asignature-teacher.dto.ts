@@ -1,13 +1,11 @@
-import { IsNotEmpty, IsUUID } from "class-validator";
+import { IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CreateAsignatureTeacherDto {
+  @IsUUID()
+  @IsNotEmpty()
+  userId: string;
 
-    @IsUUID()
-    @IsNotEmpty()
-    userId: string;
-
-    @IsUUID()
-    @IsNotEmpty()
-    subjectId: string;
-
+  @IsUUID()
+  @IsNotEmpty()
+  subjectId: string;
 }

@@ -26,71 +26,93 @@ export class GamesService {
       const savedGame = await this.gameRepo.save(game);
 
       if (!savedGame) {
-        throw new ManagerError({ type: 'BAD_REQUEST', message: 'Error al crear una partida' });
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'Error al crear una partida',
+        });
       }
       return savedGame;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit, page } = paginationDto
-    const skip = ( page - 1 ) * limit;
+    const { limit, page } = paginationDto;
+    const skip = (page - 1) * limit;
     try {
       const [game, total] = await Promise.all([
         this.gameRepo.find({ skip: skip, take: limit }),
         this.gameRepo.count(),
-      ])
+      ]);
 
-      const lastPage = Math.ceil( total/limit )
+      const lastPage = Math.ceil(total / limit);
 
       return {
         data: game,
         meta: {
-          total, 
+          total,
           page,
           limit,
-          lastPage
-        }
-      }
+          lastPage,
+        },
+      };
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 
   async findOne(id: string) {
     try {
-      const game = await this.gameRepo.findOne({ where: { id }, relations: { user: true } });
-      if (!game) throw new ManagerError({ type: 'NOT_FOUND', message: 'Partida no encontrada' });
+      const game = await this.gameRepo.findOne({
+        where: { id },
+        relations: { user: true },
+      });
+      if (!game)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Partida no encontrada',
+        });
       return game;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
 
   async update(id: string, updateGameDto: UpdateGameDto) {
     try {
-
       const { userId, ...gameData } = updateGameDto;
       let user;
       if (userId) user = await this.usersService.findOne(userId);
 
       if (Object.keys(gameData).length === 0 && !userId) {
-        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'No se enviaron datos para actualizar',
+        });
       }
-      
-      const game = await this.gameRepo.update(id, { ...gameData, ...(user && { user }) });
-      if (game.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Partida no encontrada' });
+
+      const game = await this.gameRepo.update(id, {
+        ...gameData,
+        ...(user && { user }),
+      });
+      if (game.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Partida no encontrada',
+        });
       return game;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
@@ -98,10 +120,15 @@ export class GamesService {
   async remove(id: string) {
     try {
       const game = await this.gameRepo.delete(id);
-      if (game.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Partida no encontrada' });
+      if (game.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Partida no encontrada',
+        });
       return game;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }

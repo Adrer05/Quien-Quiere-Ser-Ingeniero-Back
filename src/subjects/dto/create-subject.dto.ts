@@ -1,13 +1,11 @@
-import { IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateSubjectDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
-    @IsString()
-    @IsNotEmpty()
-    name: string;
-
-    @IsUUID()
-    @IsNotEmpty()
-    semesterId: string;
-
+  @IsUUID()
+  @IsNotEmpty()
+  semesterId: string;
 }

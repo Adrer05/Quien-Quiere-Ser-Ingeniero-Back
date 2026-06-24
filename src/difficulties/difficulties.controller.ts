@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+  Query,
+} from '@nestjs/common';
 import { DifficultiesService } from './difficulties.service';
 import { CreateDifficultyDto } from './dto/create-difficulty.dto';
 import { UpdateDifficultyDto } from './dto/update-difficulty.dto';
@@ -24,7 +34,10 @@ export class DifficultiesController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateDifficultyDto: UpdateDifficultyDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateDifficultyDto: UpdateDifficultyDto,
+  ) {
     return this.difficultiesService.update(id, updateDifficultyDto);
   }
 

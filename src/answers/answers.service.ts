@@ -52,100 +52,119 @@ export class AnswersService {
         });
       }
 
-      const answer = this.answerRepo.create({ ...answerData, isCorrect, question });
+      const answer = this.answerRepo.create({
+        ...answerData,
+        isCorrect,
+        question,
+      });
       const savedAnswer = await this.answerRepo.save(answer);
 
       if (!savedAnswer) {
-        throw new ManagerError({ type: 'BAD_REQUEST', message: 'Error al crear una respuesta' });
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'Error al crear una respuesta',
+        });
       }
       return savedAnswer;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit, page } = paginationDto
-    const skip = ( page - 1 ) * limit;
+    const { limit, page } = paginationDto;
+    const skip = (page - 1) * limit;
     try {
       const [answer, total] = await Promise.all([
         this.answerRepo.find({ skip: skip, take: limit }),
         this.answerRepo.count(),
-      ])
+      ]);
 
-      const lastPage = Math.ceil( total/limit )
+      const lastPage = Math.ceil(total / limit);
 
       return {
         data: answer,
         meta: {
-          total, 
+          total,
           page,
           limit,
-          lastPage
-        }
-      }
+          lastPage,
+        },
+      };
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 
   async findOne(id: string) {
     try {
-      const answer = await this.answerRepo.findOneBy({ id })
-      if (!answer) throw new ManagerError({ type: 'NOT_FOUND', message: 'Usuario no encontrado' });
+      const answer = await this.answerRepo.findOneBy({ id });
+      if (!answer)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Usuario no encontrado',
+        });
 
-      return answer
+      return answer;
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 
   async update(id: string, updateAnswerDto: UpdateAnswerDto) {
     try {
-
-      if (Object.keys(updateAnswerDto).length === 0){
-        throw new ManagerError({ type: "BAD_REQUEST", message: "No se enviaron datos para actualizar" });
+      if (Object.keys(updateAnswerDto).length === 0) {
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'No se enviaron datos para actualizar',
+        });
       }
-
 
       const answer = await this.answerRepo.update(id, updateAnswerDto);
 
-      if(answer.affected===0){
-        throw new ManagerError({ type: "NOT_FOUND", message: "Respuesta no encontrado" });
+      if (answer.affected === 0) {
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Respuesta no encontrado',
+        });
       }
 
-      return answer
+      return answer;
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 
   async remove(id: string) {
     try {
-      const answer = await this.answerRepo.delete(id)
-      if(answer.affected===0){
-        throw new ManagerError({ type: "NOT_FOUND", message: "Usuario no encontrado" });
+      const answer = await this.answerRepo.delete(id);
+      if (answer.affected === 0) {
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Usuario no encontrado',
+        });
       }
-      return answer
+      return answer;
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 }

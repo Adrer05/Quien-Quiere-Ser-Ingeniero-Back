@@ -10,138 +10,168 @@ import { RolService } from 'src/roles/rol.service';
 
 @Injectable()
 export class UsersService {
-
   constructor(
     @InjectRepository(User)
     private readonly usersRepo: Repository<User>,
     private readonly rolService: RolService,
-  ){}
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
       const { rolId, ...userData } = createUserDto;
 
       const rol = await this.rolService.findOne(rolId);
-      if(!rol){
+      if (!rol) {
         throw new ManagerError({
-          type: "NOT_FOUND",
-          message: "No se encuentra el Rol indicado"
-        })
+          type: 'NOT_FOUND',
+          message: 'No se encuentra el Rol indicado',
+        });
       }
 
-      const usernameRepeat = await this.usersRepo.findOne ({ where:{ userName: userData.userName } });
-      if(usernameRepeat){
+      const usernameRepeat = await this.usersRepo.findOne({
+        where: { userName: userData.userName },
+      });
+      if (usernameRepeat) {
         throw new ManagerError({
-          type: "CONFLICT",
-          message: "El Nombre de usuario ya se encuentra registrado"
-        })
+          type: 'CONFLICT',
+          message: 'El Nombre de usuario ya se encuentra registrado',
+        });
       }
 
-      const emailRepeat = await this.usersRepo.findOne ({ where: { email: userData.email } });
-      if(emailRepeat){
+      const emailRepeat = await this.usersRepo.findOne({
+        where: { email: userData.email },
+      });
+      if (emailRepeat) {
         throw new ManagerError({
-          type: "CONFLICT",
-          message: "El Email ya se encuentra registrado"
-        })
+          type: 'CONFLICT',
+          message: 'El Email ya se encuentra registrado',
+        });
       }
-
-
 
       const user = this.usersRepo.create({ ...userData, rol });
       const savedUser = await this.usersRepo.save(user);
-      
-      if(!user){
+
+      if (!user) {
         throw new ManagerError({
-          type: "BAD_REQUEST",
-          message: "Error al crear un usuario"
-        })
+          type: 'BAD_REQUEST',
+          message: 'Error al crear un usuario',
+        });
       }
 
-      return savedUser
+      return savedUser;
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit, page } = paginationDto
-    const skip = ( page - 1 ) * limit;
+    const { limit, page } = paginationDto;
+    const skip = (page - 1) * limit;
     try {
       const [users, total] = await Promise.all([
         this.usersRepo.find({ skip: skip, take: limit }),
         this.usersRepo.count(),
-      ])
+      ]);
 
-      const lastPage = Math.ceil( total/limit )
+      const lastPage = Math.ceil(total / limit);
 
       return {
         data: users,
         meta: {
-          total, 
+          total,
           page,
           limit,
-          lastPage
-        }
-      }
+          lastPage,
+        },
+      };
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
+    }
+  }
+
+  async findOneUsername(userName: string) {
+    try {
+      const user = await this.usersRepo.findOneBy({ userName });
+      if (!user)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Usuario no encontrado',
+        });
+      return user;
+    } catch (error) {
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
+      throw error;
     }
   }
 
   async findOne(id: string) {
     try {
       const user = await this.usersRepo.findOneBy({ id });
-      if (!user) throw new ManagerError({ type: 'NOT_FOUND', message: 'Usuario no encontrado' });
+      if (!user)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Usuario no encontrado',
+        });
       return user;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
-
-      if (Object.keys(updateUserDto).length === 0){
-        throw new ManagerError({ type: "BAD_REQUEST", message: "No se enviaron datos para actualizar" });
+      if (Object.keys(updateUserDto).length === 0) {
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'No se enviaron datos para actualizar',
+        });
       }
 
       const user = await this.usersRepo.update(id, updateUserDto);
-      if(user.affected===0){
-        throw new ManagerError({ type: "BAD_REQUEST", message: "Ningún registro afectado" });
+      if (user.affected === 0) {
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'Ningún registro afectado',
+        });
       }
 
-      return user
+      return user;
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 
   async remove(id: string) {
     try {
-      const user = await this.usersRepo.delete(id)
-      if(user.affected===0){
-        throw new ManagerError({ type: "NOT_FOUND", message: "Usuario no encontrado" });
+      const user = await this.usersRepo.delete(id);
+      if (user.affected === 0) {
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Usuario no encontrado',
+        });
       }
-      return user
+      return user;
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 }

@@ -1,9 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ParseUUIDPipe,
+  ClassSerializerInterceptor,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from './../common/dtos/pagination/pagination.dto';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -14,7 +27,7 @@ export class UsersController {
   }
 
   @Get()
-  findAll( @Query() paginationDto: PaginationDto ) {
+  findAll(@Query() paginationDto: PaginationDto) {
     return this.usersService.findAll(paginationDto);
   }
 
@@ -23,8 +36,16 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @Get(':userName')
+  findOneUsername(@Param('userName', ParseUUIDPipe) userName: string) {
+    return this.usersService.findOneUsername(userName);
+  }
+
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     return this.usersService.update(id, updateUserDto);
   }
 

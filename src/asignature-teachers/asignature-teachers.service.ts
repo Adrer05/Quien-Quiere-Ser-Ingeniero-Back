@@ -36,45 +36,53 @@ export class AsignatureTeachersService {
         });
       }
 
-      const asignatureTeacher = this.asignatureTeacherRepo.create({ user, subject });
-      const savedAsignatureTeacher = await this.asignatureTeacherRepo.save(asignatureTeacher);
+      const asignatureTeacher = this.asignatureTeacherRepo.create({
+        user,
+        subject,
+      });
+      const savedAsignatureTeacher =
+        await this.asignatureTeacherRepo.save(asignatureTeacher);
 
       if (!savedAsignatureTeacher) {
-        throw new ManagerError({ type: 'BAD_REQUEST', message: 'Error al asignar el profesor' });
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'Error al asignar el profesor',
+        });
       }
       return savedAsignatureTeacher;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit, page } = paginationDto
-    const skip = ( page - 1 ) * limit;
+    const { limit, page } = paginationDto;
+    const skip = (page - 1) * limit;
     try {
       const [asignatureTeacher, total] = await Promise.all([
         this.asignatureTeacherRepo.find({ skip: skip, take: limit }),
         this.asignatureTeacherRepo.count(),
-      ])
+      ]);
 
-      const lastPage = Math.ceil( total/limit )
+      const lastPage = Math.ceil(total / limit);
 
       return {
         data: asignatureTeacher,
         meta: {
-          total, 
+          total,
           page,
           limit,
-          lastPage
-        }
-      }
+          lastPage,
+        },
+      };
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
   async findOne(id: string) {
@@ -83,15 +91,23 @@ export class AsignatureTeachersService {
         where: { id },
         relations: { user: true, subject: true },
       });
-      if (!asignatureTeacher) throw new ManagerError({ type: 'NOT_FOUND', message: 'Asignación no encontrada' });
+      if (!asignatureTeacher)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Asignación no encontrada',
+        });
       return asignatureTeacher;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
 
-  async update(id: string, updateAsignatureTeacherDto: UpdateAsignatureTeacherDto) {
+  async update(
+    id: string,
+    updateAsignatureTeacherDto: UpdateAsignatureTeacherDto,
+  ) {
     try {
       const { userId, subjectId } = updateAsignatureTeacherDto;
 
@@ -102,7 +118,10 @@ export class AsignatureTeachersService {
       if (subjectId) subject = await this.subjectsService.findOne(subjectId);
 
       if (!userId && !subjectId) {
-        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'No se enviaron datos para actualizar',
+        });
       }
 
       const asignatureTeacher = await this.asignatureTeacherRepo.update(id, {
@@ -110,10 +129,15 @@ export class AsignatureTeachersService {
         ...(subject && { subject }),
       });
 
-      if (asignatureTeacher.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Asignación no encontrada' });
+      if (asignatureTeacher.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Asignación no encontrada',
+        });
       return asignatureTeacher;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
@@ -121,10 +145,15 @@ export class AsignatureTeachersService {
   async remove(id: string) {
     try {
       const asignatureTeacher = await this.asignatureTeacherRepo.delete(id);
-      if (asignatureTeacher.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Asignación no encontrada' });
+      if (asignatureTeacher.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Asignación no encontrada',
+        });
       return asignatureTeacher;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }

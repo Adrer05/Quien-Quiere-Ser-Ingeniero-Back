@@ -8,10 +8,7 @@ import { CareerService } from 'src/degrees/career.service';
 @Module({
   controllers: [SemesterController],
   providers: [SemesterService],
-  imports: [
-    TypeOrmModule.forFeature([Semester]),
-    CareerModule
-  ],
-  exports: [SemesterService]
+  imports: [TypeOrmModule.forFeature([Semester]), CareerModule],
+  exports: [SemesterService],
 })
 export class SemesterModule {}

@@ -16,12 +16,33 @@ export class CareerService {
 
   async create(createCareerDto: CreateCareerDto) {
     try {
+      const existingName = await this.careerRepo.findOne({
+        where: { name: createCareerDto.name },
+      });
+      if (existingName) {
+        throw new ManagerError({
+          type: 'CONFLICT',
+          message: 'La carrera ya existe',
+        });
+      }
+
+      const existingCode = await this.careerRepo.findOne({
+        where: { careerCode: createCareerDto.careerCode },
+      });
+      if (existingCode) {
+        throw new ManagerError({
+          type: 'CONFLICT',
+          message: 'El código de carrera ya existe',
+        });
+      }
+
       const career = this.careerRepo.create(createCareerDto);
       const savedCareer = await this.careerRepo.save(career);
 
       if (!savedCareer) {
-        throw new ManagerError({ 
-          type: 'BAD_REQUEST', message: 'Error al crear una carrera' 
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'Error al crear una carrera',
         });
       }
 
@@ -35,39 +56,43 @@ export class CareerService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit, page } = paginationDto
-    const skip = ( page - 1 ) * limit;
+    const { limit, page } = paginationDto;
+    const skip = (page - 1) * limit;
     try {
       const [career, total] = await Promise.all([
         this.careerRepo.find({ skip: skip, take: limit }),
         this.careerRepo.count(),
-      ])
+      ]);
 
-      const lastPage = Math.ceil( total/limit )
+      const lastPage = Math.ceil(total / limit);
 
       return {
         data: career,
         meta: {
-          total, 
+          total,
           page,
           limit,
-          lastPage
-        }
-      }
+          lastPage,
+        },
+      };
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 
   async findOne(id: string) {
     try {
       const career = await this.careerRepo.findOneBy({ id });
-      if (!career) throw new ManagerError({ type: 'NOT_FOUND', message: 'Carrera no encontrada' });
-      
+      if (!career)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Carrera no encontrada',
+        });
+
       return career;
     } catch (error) {
       if (error instanceof ManagerError) {
@@ -79,16 +104,23 @@ export class CareerService {
 
   async update(id: string, updateCareerDto: UpdateCareerDto) {
     try {
-
-      if (Object.keys(updateCareerDto).length === 0){
-        throw new ManagerError({ type: "BAD_REQUEST", message: "No se enviaron datos para actualizar" });
+      if (Object.keys(updateCareerDto).length === 0) {
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'No se enviaron datos para actualizar',
+        });
       }
 
       const career = await this.careerRepo.update(id, updateCareerDto);
-      if (career.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Carrera no encontrada' });
+      if (career.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Carrera no encontrada',
+        });
       return career;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
@@ -96,7 +128,11 @@ export class CareerService {
   async remove(id: string) {
     try {
       const career = await this.careerRepo.delete(id);
-      if (career.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Carrera no encontrada' });
+      if (career.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Carrera no encontrada',
+        });
       return career;
     } catch (error) {
       if (error instanceof ManagerError) {

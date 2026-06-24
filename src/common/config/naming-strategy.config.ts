@@ -9,13 +9,19 @@ function toSnakeCase(str: string): string {
     .toLowerCase();
 }
 
-export class SnakeNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
-  
+export class SnakeNamingStrategy
+  extends DefaultNamingStrategy
+  implements NamingStrategyInterface
+{
   tableName(className: string, customName: string): string {
     return customName ? customName : toSnakeCase(className);
   }
 
-  columnName(propertyName: string, customName: string, embeddedPrefixes: string[]): string {
+  columnName(
+    propertyName: string,
+    customName: string,
+    embeddedPrefixes: string[],
+  ): string {
     return (
       toSnakeCase(embeddedPrefixes.concat('').join('_')) +
       (customName ? customName : toSnakeCase(propertyName))
@@ -47,8 +53,14 @@ export class SnakeNamingStrategy extends DefaultNamingStrategy implements Naming
     );
   }
 
-  joinTableColumnName(tableName: string, propertyName: string, columnName?: string): string {
-    return toSnakeCase(tableName + '_' + (columnName ? columnName : propertyName));
+  joinTableColumnName(
+    tableName: string,
+    propertyName: string,
+    columnName?: string,
+  ): string {
+    return toSnakeCase(
+      tableName + '_' + (columnName ? columnName : propertyName),
+    );
   }
 
   classTableInheritanceParentColumnName(

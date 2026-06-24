@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+  Query,
+} from '@nestjs/common';
 import { AsignatureTeachersService } from './asignature-teachers.service';
 import { CreateAsignatureTeacherDto } from './dto/create-asignature-teacher.dto';
 import { UpdateAsignatureTeacherDto } from './dto/update-asignature-teacher.dto';
@@ -6,7 +16,9 @@ import { PaginationDto } from 'src/common/dtos/pagination/pagination.dto';
 
 @Controller('asignature-teachers')
 export class AsignatureTeachersController {
-  constructor(private readonly asignatureTeachersService: AsignatureTeachersService) {}
+  constructor(
+    private readonly asignatureTeachersService: AsignatureTeachersService,
+  ) {}
 
   @Post()
   create(@Body() createAsignatureTeacherDto: CreateAsignatureTeacherDto) {
@@ -24,8 +36,14 @@ export class AsignatureTeachersController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateAsignatureTeacherDto: UpdateAsignatureTeacherDto) {
-    return this.asignatureTeachersService.update(id, updateAsignatureTeacherDto);
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateAsignatureTeacherDto: UpdateAsignatureTeacherDto,
+  ) {
+    return this.asignatureTeachersService.update(
+      id,
+      updateAsignatureTeacherDto,
+    );
   }
 
   @Delete(':id')

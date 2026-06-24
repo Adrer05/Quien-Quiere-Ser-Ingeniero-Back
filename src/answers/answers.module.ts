@@ -9,10 +9,7 @@ import { QuestionsModule } from 'src/questions/questions.module';
 @Module({
   controllers: [AnswersController],
   providers: [AnswersService],
-  imports: [
-    TypeOrmModule.forFeature([Answer]),
-    QuestionsModule,
-  ],
-  exports: [AnswersService]
+  imports: [TypeOrmModule.forFeature([Answer]), QuestionsModule],
+  exports: [AnswersService],
 })
 export class AnswersModule {}

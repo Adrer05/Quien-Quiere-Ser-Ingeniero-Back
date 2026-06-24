@@ -1,9 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+  Query,
+} from '@nestjs/common';
 import { RankingService } from './ranking.service';
 import { CreateRankingDto } from './dto/create-ranking.dto';
 import { UpdateRankingDto } from './dto/update-ranking.dto';
 import { PaginationDto } from 'src/common/dtos/pagination/pagination.dto';
-
 
 @Controller('ranking')
 export class RankingController {
@@ -25,7 +34,10 @@ export class RankingController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateRankingDto: UpdateRankingDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateRankingDto: UpdateRankingDto,
+  ) {
     return this.rankingService.update(id, updateRankingDto);
   }
 

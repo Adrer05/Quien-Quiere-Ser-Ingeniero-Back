@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+  Query,
+} from '@nestjs/common';
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
@@ -14,7 +24,7 @@ export class GamesController {
   }
 
   @Get()
-  findAll( @Query() paginationDto: PaginationDto) {
+  findAll(@Query() paginationDto: PaginationDto) {
     return this.gamesService.findAll(paginationDto);
   }
 
@@ -24,7 +34,10 @@ export class GamesController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateGameDto: UpdateGameDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateGameDto: UpdateGameDto,
+  ) {
     return this.gamesService.update(id, updateGameDto);
   }
 

@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { createDataSourceOptions } from './common/config/datasource';
+import { AuthGuard } from './auth/auth.guard';
 import { UsersModule } from './users/users.module';
 import { RolModule } from './roles/rol.module';
 import { RankingModule } from './ranking/ranking.module';
@@ -14,8 +16,15 @@ import { QuestionsModule } from './questions/questions.module';
 import { AnswersModule } from './answers/answers.module';
 import { GamesModule } from './games/games.module';
 import { AsignatureTeachersModule } from './asignature-teachers/asignature-teachers.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.env`,
@@ -40,6 +49,7 @@ import { AsignatureTeachersModule } from './asignature-teachers/asignature-teach
     AnswersModule,
     GamesModule,
     AsignatureTeachersModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

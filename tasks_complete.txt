@@ -1,0 +1,24 @@
+Modulos Completados:
+- Users
+- degrees
+- roles
+- subjects
+- semesters
+- answers
+- questions
+- difficulty
+- ranking
+- games
+- topics
+- asignature-teachers
+- auth (aun faltan los guards)
+
+Validaciones aplicadas:
+
+- Ningun objeto json llegue vacio
+- unicidad en usernames y emails en los usuario
+- no se muestran contrase;as en objetos JSON pero se pueden usar en el backend
+- Tambien se agrego hasheo de constrase;as 
+- validaciones de unicidad en semestres de una misma carrera
+- metodo de auth login con JWT
+- faltan los guards

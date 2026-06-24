@@ -11,7 +11,9 @@ describe('AsignatureTeachersController', () => {
       providers: [AsignatureTeachersService],
     }).compile();
 
-    controller = module.get<AsignatureTeachersController>(AsignatureTeachersController);
+    controller = module.get<AsignatureTeachersController>(
+      AsignatureTeachersController,
+    );
   });
 
   it('should be defined', () => {

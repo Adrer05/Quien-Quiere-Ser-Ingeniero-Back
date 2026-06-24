@@ -21,56 +21,77 @@ export class SubjectsService {
       const { semesterId, ...subjectData } = createSubjectDto;
       const semester = await this.semesterService.findOne(semesterId);
 
+      const existingSubject = await this.subjectRepo.findOne({
+        where: { name: subjectData.name, semester: { id: semesterId } },
+      });
+      if (existingSubject) {
+        throw new ManagerError({
+          type: 'CONFLICT',
+          message: 'La asignatura ya existe en este semestre',
+        });
+      }
+
       const subject = this.subjectRepo.create({ ...subjectData, semester });
       const savedSubject = await this.subjectRepo.save(subject);
 
       if (!savedSubject) {
-        throw new ManagerError({ type: 'BAD_REQUEST', message: 'Error al crear una asignatura' });
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'Error al crear una asignatura',
+        });
       }
       return savedSubject;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit, page } = paginationDto
-    const skip = ( page - 1 ) * limit;
+    const { limit, page } = paginationDto;
+    const skip = (page - 1) * limit;
     try {
       const [subject, total] = await Promise.all([
         this.subjectRepo.find({ skip: skip, take: limit }),
         this.subjectRepo.count(),
-      ])
+      ]);
 
-      const lastPage = Math.ceil( total/limit )
+      const lastPage = Math.ceil(total / limit);
 
       return {
         data: subject,
         meta: {
-          total, 
+          total,
           page,
           limit,
-          lastPage
-        }
-      }
+          lastPage,
+        },
+      };
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 
-
   async findOne(id: string) {
     try {
-      const subject = await this.subjectRepo.findOne({ where: { id }, relations: { semester: true } });
-      if (!subject) throw new ManagerError({ type: 'NOT_FOUND', message: 'Asignatura no encontrada' });
+      const subject = await this.subjectRepo.findOne({
+        where: { id },
+        relations: { semester: true },
+      });
+      if (!subject)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Asignatura no encontrada',
+        });
       return subject;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
@@ -82,14 +103,25 @@ export class SubjectsService {
       if (semesterId) semester = await this.semesterService.findOne(semesterId);
 
       if (Object.keys(subjectData).length === 0 && !semesterId) {
-        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'No se enviaron datos para actualizar',
+        });
       }
 
-      const subject = await this.subjectRepo.update(id, { ...subjectData, ...(semester && { semester }) });
-      if (subject.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Asignatura no encontrada' });
+      const subject = await this.subjectRepo.update(id, {
+        ...subjectData,
+        ...(semester && { semester }),
+      });
+      if (subject.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Asignatura no encontrada',
+        });
       return subject;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
@@ -97,10 +129,15 @@ export class SubjectsService {
   async remove(id: string) {
     try {
       const subject = await this.subjectRepo.delete(id);
-      if (subject.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Asignatura no encontrada' });
+      if (subject.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Asignatura no encontrada',
+        });
       return subject;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }

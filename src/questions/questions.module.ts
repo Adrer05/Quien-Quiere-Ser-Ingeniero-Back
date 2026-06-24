@@ -14,6 +14,6 @@ import { TopicsModule } from 'src/topics/topics.module';
     DifficultiesModule,
     TopicsModule,
   ],
-  exports: [QuestionsService]
+  exports: [QuestionsService],
 })
 export class QuestionsModule {}

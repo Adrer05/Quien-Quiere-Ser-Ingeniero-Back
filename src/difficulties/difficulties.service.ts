@@ -7,7 +7,6 @@ import { UpdateDifficultyDto } from './dto/update-difficulty.dto';
 import { ManagerError } from './../common/errors/manager.error';
 import { PaginationDto } from 'src/common/dtos/pagination/pagination.dto';
 
-
 @Injectable()
 export class DifficultiesService {
   constructor(
@@ -17,71 +16,100 @@ export class DifficultiesService {
 
   async create(createDifficultyDto: CreateDifficultyDto) {
     try {
+      const existingDifficulty = await this.difficultyRepo.findOne({
+        where: { name: createDifficultyDto.name },
+      });
+      if (existingDifficulty) {
+        throw new ManagerError({
+          type: 'CONFLICT',
+          message: 'La dificultad ya existe',
+        });
+      }
+
       const difficulty = this.difficultyRepo.create(createDifficultyDto);
       const savedDifficulty = await this.difficultyRepo.save(difficulty);
 
       if (!savedDifficulty) {
-        throw new ManagerError({ type: 'BAD_REQUEST', message: 'Error al crear una dificultad' });
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'Error al crear una dificultad',
+        });
       }
       return savedDifficulty;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit, page } = paginationDto
-    const skip = ( page - 1 ) * limit;
+    const { limit, page } = paginationDto;
+    const skip = (page - 1) * limit;
     try {
       const [difficulty, total] = await Promise.all([
         this.difficultyRepo.find({ skip: skip, take: limit }),
         this.difficultyRepo.count(),
-      ])
+      ]);
 
-      const lastPage = Math.ceil( total/limit )
+      const lastPage = Math.ceil(total / limit);
 
       return {
         data: difficulty,
         meta: {
-          total, 
+          total,
           page,
           limit,
-          lastPage
-        }
-      }
+          lastPage,
+        },
+      };
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 
   async findOne(id: string) {
     try {
       const difficulty = await this.difficultyRepo.findOneBy({ id });
-      if (!difficulty) throw new ManagerError({ type: 'NOT_FOUND', message: 'Dificultad no encontrada' });
+      if (!difficulty)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Dificultad no encontrada',
+        });
       return difficulty;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
 
   async update(id: string, updateDifficultyDto: UpdateDifficultyDto) {
     try {
-
       if (Object.keys(updateDifficultyDto).length === 0) {
-        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'No se enviaron datos para actualizar',
+        });
       }
 
-      const difficulty = await this.difficultyRepo.update(id, updateDifficultyDto);
-      if (difficulty.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Dificultad no encontrada' });
+      const difficulty = await this.difficultyRepo.update(
+        id,
+        updateDifficultyDto,
+      );
+      if (difficulty.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Dificultad no encontrada',
+        });
       return difficulty;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
@@ -89,10 +117,15 @@ export class DifficultiesService {
   async remove(id: string) {
     try {
       const difficulty = await this.difficultyRepo.delete(id);
-      if (difficulty.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Dificultad no encontrada' });
+      if (difficulty.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Dificultad no encontrada',
+        });
       return difficulty;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }

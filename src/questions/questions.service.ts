@@ -25,55 +25,71 @@ export class QuestionsService {
       const topic = await this.topicsService.findOne(topicId);
       const difficulty = await this.difficultiesService.findOne(difficultyId);
 
-      const question = this.questionRepo.create({ ...questionData, topic, difficulty });
+      const question = this.questionRepo.create({
+        ...questionData,
+        topic,
+        difficulty,
+      });
       const savedQuestion = await this.questionRepo.save(question);
 
       if (!savedQuestion) {
-        throw new ManagerError({ type: 'BAD_REQUEST', message: 'Error al crear una pregunta' });
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'Error al crear una pregunta',
+        });
       }
       return savedQuestion;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit, page } = paginationDto
-    const skip = ( page - 1 ) * limit;
+    const { limit, page } = paginationDto;
+    const skip = (page - 1) * limit;
     try {
       const [question, total] = await Promise.all([
         this.questionRepo.find({ skip: skip, take: limit }),
         this.questionRepo.count(),
-      ])
+      ]);
 
-      const lastPage = Math.ceil( total/limit )
+      const lastPage = Math.ceil(total / limit);
 
       return {
         data: question,
         meta: {
-          total, 
+          total,
           page,
           limit,
-          lastPage
-        }
-      }
+          lastPage,
+        },
+      };
     } catch (error) {
-      if(error instanceof ManagerError){
+      if (error instanceof ManagerError) {
         throw ManagerError.createSignatureError(error.message);
       }
 
-      throw error
+      throw error;
     }
   }
 
   async findOne(id: string) {
     try {
-      const question = await this.questionRepo.findOne({ where: { id }, relations: { topic: true, difficulty: true } });
-      if (!question) throw new ManagerError({ type: 'NOT_FOUND', message: 'Pregunta no encontrada' });
+      const question = await this.questionRepo.findOne({
+        where: { id },
+        relations: { topic: true, difficulty: true },
+      });
+      if (!question)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Pregunta no encontrada',
+        });
       return question;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
@@ -86,10 +102,14 @@ export class QuestionsService {
       if (topicId) topic = await this.topicsService.findOne(topicId);
 
       let difficulty;
-      if (difficultyId) difficulty = await this.difficultiesService.findOne(difficultyId);
+      if (difficultyId)
+        difficulty = await this.difficultiesService.findOne(difficultyId);
 
       if (Object.keys(questionData).length === 0 && !topicId && !difficultyId) {
-        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+        throw new ManagerError({
+          type: 'BAD_REQUEST',
+          message: 'No se enviaron datos para actualizar',
+        });
       }
 
       const question = await this.questionRepo.update(id, {
@@ -98,10 +118,15 @@ export class QuestionsService {
         ...(difficulty && { difficulty }),
       });
 
-      if (question.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Pregunta no encontrada' });
+      if (question.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Pregunta no encontrada',
+        });
       return question;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }
@@ -109,10 +134,15 @@ export class QuestionsService {
   async remove(id: string) {
     try {
       const question = await this.questionRepo.delete(id);
-      if (question.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Pregunta no encontrada' });
+      if (question.affected === 0)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: 'Pregunta no encontrada',
+        });
       return question;
     } catch (error) {
-      if (error instanceof ManagerError) throw ManagerError.createSignatureError(error.message);
+      if (error instanceof ManagerError)
+        throw ManagerError.createSignatureError(error.message);
       throw error;
     }
   }

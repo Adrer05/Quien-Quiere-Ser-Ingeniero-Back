@@ -1,13 +1,11 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateCareerDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
-@IsString()
-@IsNotEmpty()
-name: string;
-
-@IsNumber()
-@IsNotEmpty()
-careerCode: number;
-
+  @IsNumber()
+  @IsNotEmpty()
+  careerCode: number;
 }

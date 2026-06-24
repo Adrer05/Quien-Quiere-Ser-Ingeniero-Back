@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+  Query,
+} from '@nestjs/common';
 import { RolService } from './rol.service';
 import { CreateRolDto } from './dto/create-rol.dto';
 import { UpdateRolDto } from './dto/update-rol.dto';
@@ -14,7 +24,7 @@ export class RolController {
   }
 
   @Get()
-  findAll( @Query() paginationDto: PaginationDto ) {
+  findAll(@Query() paginationDto: PaginationDto) {
     return this.rolService.findAll(paginationDto);
   }
 
@@ -24,7 +34,10 @@ export class RolController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateRolDto: UpdateRolDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateRolDto: UpdateRolDto,
+  ) {
     return this.rolService.update(id, updateRolDto);
   }
 

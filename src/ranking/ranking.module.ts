@@ -8,10 +8,7 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   controllers: [RankingController],
   providers: [RankingService],
-  imports: [
-    TypeOrmModule.forFeature([Ranking]),
-    UsersModule,
-  ],
-  exports: [RankingService]
+  imports: [TypeOrmModule.forFeature([Ranking]), UsersModule],
+  exports: [RankingService],
 })
 export class RankingModule {}
