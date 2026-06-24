@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+# Otros
+tasks_complete.ts
+
 # Logs
 logs
 *.log

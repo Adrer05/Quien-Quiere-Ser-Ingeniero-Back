@@ -21,12 +21,6 @@ export class SemesterService {
       const { careerId, ...semesterData } = createSemesterDto;
 
       const career = await this.careerService.findOne(careerId);
-      if (!career) {
-        throw new ManagerError({
-          type: 'NOT_FOUND',
-          message: 'No se encuentra la carrera',
-        });
-      }
 
       const repeatedSemester = await this.semesterRepo.findOne({
         where: {
@@ -121,7 +115,7 @@ export class SemesterService {
       if (semester.affected === 0) {
         throw new ManagerError({
           type: 'NOT_FOUND',
-          message: 'No se enviaron datos para actualizar',
+          message: 'Semestre no encontrado',
         });
       }
       return semester;

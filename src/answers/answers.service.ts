@@ -108,7 +108,7 @@ export class AnswersService {
       if (!answer)
         throw new ManagerError({
           type: 'NOT_FOUND',
-          message: 'Usuario no encontrado',
+          message: 'Respuesta no encontrada',
         });
 
       return answer;
@@ -135,7 +135,7 @@ export class AnswersService {
       if (answer.affected === 0) {
         throw new ManagerError({
           type: 'NOT_FOUND',
-          message: 'Respuesta no encontrado',
+          message: 'Respuesta no encontrada',
         });
       }
 
@@ -155,7 +155,7 @@ export class AnswersService {
       if (answer.affected === 0) {
         throw new ManagerError({
           type: 'NOT_FOUND',
-          message: 'Usuario no encontrado',
+          message: 'Respuesta no encontrada',
         });
       }
       return answer;

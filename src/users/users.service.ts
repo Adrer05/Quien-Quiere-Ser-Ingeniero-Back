@@ -21,12 +21,6 @@ export class UsersService {
       const { rolId, ...userData } = createUserDto;
 
       const rol = await this.rolService.findOne(rolId);
-      if (!rol) {
-        throw new ManagerError({
-          type: 'NOT_FOUND',
-          message: 'No se encuentra el Rol indicado',
-        });
-      }
 
       const usernameRepeat = await this.usersRepo.findOne({
         where: { userName: userData.userName },
@@ -50,13 +44,6 @@ export class UsersService {
 
       const user = this.usersRepo.create({ ...userData, rol });
       const savedUser = await this.usersRepo.save(user);
-
-      if (!user) {
-        throw new ManagerError({
-          type: 'BAD_REQUEST',
-          message: 'Error al crear un usuario',
-        });
-      }
 
       return savedUser;
     } catch (error) {
@@ -141,8 +128,8 @@ export class UsersService {
       const user = await this.usersRepo.update(id, updateUserDto);
       if (user.affected === 0) {
         throw new ManagerError({
-          type: 'BAD_REQUEST',
-          message: 'Ningún registro afectado',
+          type: 'NOT_FOUND',
+          message: 'Usuario no encontrado',
         });
       }
 
