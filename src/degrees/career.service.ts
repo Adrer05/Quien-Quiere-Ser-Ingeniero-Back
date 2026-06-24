@@ -79,6 +79,11 @@ export class CareerService {
 
   async update(id: string, updateCareerDto: UpdateCareerDto) {
     try {
+
+      if (Object.keys(updateCareerDto).length === 0){
+        throw new ManagerError({ type: "BAD_REQUEST", message: "No se enviaron datos para actualizar" });
+      }
+
       const career = await this.careerRepo.update(id, updateCareerDto);
       if (career.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Carrera no encontrada' });
       return career;

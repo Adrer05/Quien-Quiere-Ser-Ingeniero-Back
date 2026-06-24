@@ -4,7 +4,7 @@ export class CreateSemesterDto {
     
     @IsNumber()
     @IsNotEmpty()
-    number: number;
+    careerNumber: number;
     
     @IsUUID()
     @IsNotEmpty()

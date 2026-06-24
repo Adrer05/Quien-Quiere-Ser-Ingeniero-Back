@@ -7,7 +7,7 @@ import { Subject } from "../../subjects/entities/subject.entity";
 export class Semester extends BaseEntity {
 
     @Column({type: "int", nullable: false})
-    number: number;
+    careerNumber: number;
 
     @ManyToOne(()=> Career, career => career.semester)
     @JoinColumn({name: "career_id"})

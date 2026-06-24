@@ -83,6 +83,11 @@ export class RolService {
 
   async update(id: string, updateRolDto: UpdateRolDto) {
     try {
+
+      if (Object.keys(updateRolDto).length === 0){
+        throw new ManagerError({ type: "BAD_REQUEST", message: "No se enviaron datos para actualizar" });
+      }
+
       const rol = await this.rolRepo.update(id, updateRolDto);
       if (rol.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Rol no encontrado' });
       

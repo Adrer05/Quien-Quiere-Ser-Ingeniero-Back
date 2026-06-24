@@ -77,10 +77,15 @@ export class GamesService {
 
   async update(id: string, updateGameDto: UpdateGameDto) {
     try {
+
       const { userId, ...gameData } = updateGameDto;
       let user;
       if (userId) user = await this.usersService.findOne(userId);
 
+      if (Object.keys(gameData).length === 0 && !userId) {
+        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+      }
+      
       const game = await this.gameRepo.update(id, { ...gameData, ...(user && { user }) });
       if (game.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Partida no encontrada' });
       return game;

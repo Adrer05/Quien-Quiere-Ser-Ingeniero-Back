@@ -111,9 +111,16 @@ export class AnswersService {
 
   async update(id: string, updateAnswerDto: UpdateAnswerDto) {
     try {
+
+      if (Object.keys(updateAnswerDto).length === 0){
+        throw new ManagerError({ type: "BAD_REQUEST", message: "No se enviaron datos para actualizar" });
+      }
+
+
       const answer = await this.answerRepo.update(id, updateAnswerDto);
+
       if(answer.affected===0){
-        throw new ManagerError({ type: "NOT_FOUND", message: "Usuario no encontrado" });
+        throw new ManagerError({ type: "NOT_FOUND", message: "Respuesta no encontrado" });
       }
 
       return answer

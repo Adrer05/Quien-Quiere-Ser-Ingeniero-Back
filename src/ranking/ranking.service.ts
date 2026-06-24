@@ -88,9 +88,14 @@ export class RankingService {
 
   async update(id: string, updateRankingDto: UpdateRankingDto) {
     try {
+
       const { userId, ...rankingData } = updateRankingDto;
       let user;
       if (userId) user = await this.usersService.findOne(userId);
+
+      if (Object.keys(rankingData).length === 0 && !userId) {
+        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+      }
 
       const ranking = await this.rankingRepo.update(id, { ...rankingData, ...(user && { user }) });
       if (ranking.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Ranking no encontrado' });

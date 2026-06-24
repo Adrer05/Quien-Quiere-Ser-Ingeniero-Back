@@ -81,6 +81,10 @@ export class SubjectsService {
       let semester;
       if (semesterId) semester = await this.semesterService.findOne(semesterId);
 
+      if (Object.keys(subjectData).length === 0 && !semesterId) {
+        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+      }
+
       const subject = await this.subjectRepo.update(id, { ...subjectData, ...(semester && { semester }) });
       if (subject.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Asignatura no encontrada' });
       return subject;

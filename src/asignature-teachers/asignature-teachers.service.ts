@@ -101,6 +101,10 @@ export class AsignatureTeachersService {
       let subject;
       if (subjectId) subject = await this.subjectsService.findOne(subjectId);
 
+      if (!userId && !subjectId) {
+        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+      }
+
       const asignatureTeacher = await this.asignatureTeacherRepo.update(id, {
         ...(user && { user }),
         ...(subject && { subject }),

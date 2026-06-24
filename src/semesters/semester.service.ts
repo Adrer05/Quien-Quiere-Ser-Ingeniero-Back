@@ -21,6 +21,18 @@ export class SemesterService {
       const { careerId, ...semesterData } = createSemesterDto;
 
       const career = await this.careerService.findOne(careerId);
+      if (!career) {
+        throw new ManagerError({ 
+          type: 'NOT_FOUND', message: 'No se encuentra la carrera'
+        });
+      }
+
+      const repeatedSemester = await  this.semesterRepo.findOne ({ where:{ careerNumber: semesterData.careerNumber } })
+      if (repeatedSemester) {
+        throw new ManagerError({ 
+          type: 'CONFLICT', message: 'Ya existe este semestre'
+        });
+      }
 
       const semester = this.semesterRepo.create({ ...semesterData, career });
       const savedSemester = await this.semesterRepo.save(semester);
@@ -82,9 +94,13 @@ export class SemesterService {
 
   async update(id: string, updateSemesterDto: UpdateSemesterDto) {
     try {
+      if (Object.keys(updateSemesterDto).length === 0){
+        throw new ManagerError({ type: "BAD_REQUEST", message: "No se enviaron datos para actualizar" });
+      }
+
       const semester = await this.semesterRepo.update(id, updateSemesterDto);
       if(semester.affected===0){
-        throw new ManagerError({ type: "NOT_FOUND", message: "Semestre no encontrado" });
+        throw new ManagerError({ type: "NOT_FOUND", message: "No se enviaron datos para actualizar" });
       }
       return semester;
     } catch (error) {

@@ -72,6 +72,11 @@ export class DifficultiesService {
 
   async update(id: string, updateDifficultyDto: UpdateDifficultyDto) {
     try {
+
+      if (Object.keys(updateDifficultyDto).length === 0) {
+        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+      }
+
       const difficulty = await this.difficultyRepo.update(id, updateDifficultyDto);
       if (difficulty.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Dificultad no encontrada' });
       return difficulty;

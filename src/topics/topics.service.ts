@@ -80,9 +80,14 @@ export class TopicsService {
 
   async update(id: string, updateTopicDto: UpdateTopicDto) {
     try {
+
       const { subjectId, ...topicData } = updateTopicDto;
       let subject;
       if (subjectId) subject = await this.subjectsService.findOne(subjectId);
+
+      if (Object.keys(topicData).length === 0 && !subjectId) {
+        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+      }
 
       const topic = await this.topicRepo.update(id, { ...topicData, ...(subject && { subject }) });
       if (topic.affected === 0) throw new ManagerError({ type: 'NOT_FOUND', message: 'Tema no encontrado' });

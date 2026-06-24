@@ -88,6 +88,10 @@ export class QuestionsService {
       let difficulty;
       if (difficultyId) difficulty = await this.difficultiesService.findOne(difficultyId);
 
+      if (Object.keys(questionData).length === 0 && !topicId && !difficultyId) {
+        throw new ManagerError({ type: 'BAD_REQUEST', message: 'No se enviaron datos para actualizar' });
+      }
+
       const question = await this.questionRepo.update(id, {
         ...questionData,
         ...(topic && { topic }),
