@@ -1,4 +1,8 @@
+packages:
+  - 'frontend'
+
 allowBuilds:
   '@nestjs/core': true
-  bcrypt: set this to true or false
+  bcrypt: true
+  esbuild: true
   unrs-resolver: true

@@ -36,8 +36,8 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Get(':userName')
-  findOneUsername(@Param('userName', ParseUUIDPipe) userName: string) {
+  @Get('username/:userName')
+  findOneUsername(@Param('userName') userName: string) {
     return this.usersService.findOneUsername(userName);
   }
 

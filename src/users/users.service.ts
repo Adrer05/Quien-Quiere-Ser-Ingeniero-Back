@@ -86,7 +86,10 @@ export class UsersService {
 
   async findOneUsername(userName: string) {
     try {
-      const user = await this.usersRepo.findOneBy({ userName });
+      const user = await this.usersRepo.findOne({
+        where: { userName },
+        relations: { rol: true },
+      });
       if (!user)
         throw new ManagerError({
           type: 'NOT_FOUND',

@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { createDataSourceOptions } from './common/config/datasource';
 import { AuthGuard } from './auth/auth.guard';
+import { RolesGuard } from './auth/roles.guard';
 import { UsersModule } from './users/users.module';
 import { RolModule } from './roles/rol.module';
 import { RankingModule } from './ranking/ranking.module';
@@ -24,6 +25,10 @@ import { AuthModule } from './auth/auth.module';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
   imports: [
     ConfigModule.forRoot({
@@ -39,7 +44,6 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     RolModule,
     RankingModule,
-    CareerModule,
     SemesterModule,
     CareerModule,
     SubjectsModule,

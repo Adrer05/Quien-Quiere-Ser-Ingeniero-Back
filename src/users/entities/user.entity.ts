@@ -2,6 +2,7 @@ import Rol from '../../roles/entities/rol.entity';
 import { BaseEntity } from './../../common/config/base.entity';
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   JoinColumn,
@@ -35,6 +36,7 @@ export class User extends BaseEntity {
 
   // //Hasheo de Contraseñas
   @BeforeInsert()
+  @BeforeUpdate()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 10);
   }

@@ -50,6 +50,24 @@ export class RankingService {
     }
   }
 
+  async getLastPosition(): Promise<number> {
+    const last = await this.rankingRepo.find({
+      order: { position: 'DESC' },
+      take: 1,
+    });
+    return last.length > 0 ? last[0].position : 0;
+  }
+
+  async createAuto(data: {
+    userId: string;
+    totalScore: number;
+    position: number;
+  }) {
+    const user = await this.usersService.findOne(data.userId);
+    const ranking = this.rankingRepo.create({ ...data, user });
+    return this.rankingRepo.save(ranking);
+  }
+
   async findAll(paginationDto: PaginationDto) {
     const { limit, page } = paginationDto;
     const skip = (page - 1) * limit;

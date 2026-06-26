@@ -93,6 +93,25 @@ export class RolService {
     }
   }
 
+  async findByName(name: string) {
+    try {
+      const rol = await this.rolRepo.findOneBy({ name });
+      if (!rol)
+        throw new ManagerError({
+          type: 'NOT_FOUND',
+          message: `Rol '${name}' no encontrado`,
+        });
+
+      return rol;
+    } catch (error) {
+      if (error instanceof ManagerError) {
+        throw ManagerError.createSignatureError(error.message);
+      }
+
+      throw error;
+    }
+  }
+
   async update(id: string, updateRolDto: UpdateRolDto) {
     try {
       if (Object.keys(updateRolDto).length === 0) {
